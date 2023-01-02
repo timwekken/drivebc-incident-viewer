@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import dbo from "../../server/db-connection";
-import getMajorEventsWithPolylines from "../../server/get-events-with-polylines";
+import getEventsWithPolylines from "../../server/get-events-with-polylines";
 
 // TODO: configure types instead of any
 
@@ -14,7 +14,7 @@ export default function handler(
   // get all event ids from the req
   const eventIds = req.query?.["eventIds[]"];
   // Get the evnts and polylines from the db
-  getMajorEventsWithPolylines(eventIds as string[])
+  getEventsWithPolylines(eventIds as string[])
     .then((results) => {
       res.status(200).json(results);
     })

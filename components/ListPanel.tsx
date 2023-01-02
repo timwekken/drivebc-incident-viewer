@@ -8,29 +8,32 @@ import {
   TwitterIcon,
   FacebookIcon,
 } from "react-share";
-import { MajorEvent } from "../types/MajorEvent";
+import { Event } from "../types/Event";
 import dayjs from "dayjs";
 import WarningIcon from "./WarningIcon";
 import Loader from "./Loader";
+import { MAJOR_COLOR, WARNING_COLOR } from "../styles/colors";
 
 interface ListPanelProps {
-  majorEvents: MajorEvent[];
-  hoveredEvent: MajorEvent | null;
-  setHoveredEvent: (event: MajorEvent | null) => void;
-  selectedEvent?: MajorEvent | null;
-  setSelectedEvent: (event: MajorEvent | null) => void;
+  events: Event[];
+  hoveredEvent: Event | null;
+  setHoveredEvent: (event: Event | null) => void;
+  selectedEvent?: Event | null;
+  setSelectedEvent: (event: Event | null) => void;
   isLoading?: boolean;
 }
 
 const ListPanel: FC<ListPanelProps> = ({
-  majorEvents,
+  events,
   hoveredEvent,
   setHoveredEvent,
   selectedEvent,
   setSelectedEvent,
   isLoading,
 }) => {
-  const refs = majorEvents.reduce((acc: any, event: MajorEvent) => {
+  const isMajor = selectedEvent?.severity === "Major";
+
+  const refs = events.reduce((acc: any, event: Event) => {
     acc[event.id] = React.createRef();
     return acc;
   }, {});
@@ -54,7 +57,7 @@ const ListPanel: FC<ListPanelProps> = ({
         <Loader />
       ) : (
         <ul className="w-full h-full">
-          {majorEvents.map((event) => {
+          {events.map((event) => {
             const { id, name, time, description } = event;
             const isSelected =
               selectedEvent?.id === event?.id || hoveredEvent?.id === event?.id;
@@ -64,7 +67,9 @@ const ListPanel: FC<ListPanelProps> = ({
                 <button
                   className={`w-full border-t-[1px] ${
                     isSelected
-                      ? "border-t-[3px] p-6 bg-slate-50 border-[#d00]"
+                      ? `border-t-[3px] p-6 bg-slate-50 ${
+                          isMajor ? `border-[#e00]` : `border-[#FF5F15]`
+                        }`
                       : "p-4 pl-6 pr-6 border-slate-200"
                   } hover:bg-slate-50 text-left`}
                   onClick={() => setSelectedEvent(event)}
@@ -74,7 +79,8 @@ const ListPanel: FC<ListPanelProps> = ({
                   <div className={isSelected ? "text-black" : "text-slate-800"}>
                     <h2
                       className={`text-lg font-bold ${
-                        isSelected && "text-[#d00]"
+                        isSelected &&
+                        `${isMajor ? `text-[#e00]` : `text-[#FF5F15]`}`
                       }`}
                     >
                       <span className="float-left mr-2 mt-[2px]">

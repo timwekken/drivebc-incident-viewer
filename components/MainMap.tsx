@@ -7,7 +7,7 @@ import React, {
   useMemo,
 } from "react";
 import Map, { Marker, Popup } from "react-map-gl";
-import { MajorEvent } from "../types/MajorEvent";
+import { Event } from "../types/Event";
 import Pin from "./Pin";
 import MapLine from "./MapLine";
 import Loader from "./Loader";
@@ -17,16 +17,16 @@ const REACT_APP_MAPBOX_TOKEN =
   "pk.eyJ1IjoidGltd2Vra2VuIiwiYSI6ImNsYzJyYWtudTFqaXgzd21uczF5N2dyYWQifQ.v6I8NiRRsrO8DtH8GvY6dQ";
 
 interface MainMapProps {
-  majorEvents: MajorEvent[];
-  hoveredEvent: MajorEvent | null;
-  setHoveredEvent: (event: MajorEvent | null) => void;
-  selectedEvent?: MajorEvent | null;
-  setSelectedEvent: (event: MajorEvent | null) => void;
+  events: Event[];
+  hoveredEvent: Event | null;
+  setHoveredEvent: (event: Event | null) => void;
+  selectedEvent?: Event | null;
+  setSelectedEvent: (event: Event | null) => void;
   isLoading?: boolean;
 }
 
 const MainMap: FC<MainMapProps> = ({
-  majorEvents,
+  events,
   hoveredEvent,
   setHoveredEvent,
   selectedEvent,
@@ -35,7 +35,7 @@ const MainMap: FC<MainMapProps> = ({
 }) => {
   const [map, setMap] = useState<any>(null);
 
-  // const [popupInfo, setPopupInfo] = useState<MajorEvent | null>(null);
+  // const [popupInfo, setPopupInfo] = useState<Event | null>(null);
 
   const flyToCoords = useCallback(
     ([long, lat]: any) => {
@@ -116,7 +116,7 @@ const MainMap: FC<MainMapProps> = ({
           mapStyle="mapbox://styles/mapbox/navigation-day-v1"
           mapboxAccessToken={REACT_APP_MAPBOX_TOKEN}
         >
-          {majorEvents.map((event) => {
+          {events.map((event) => {
             const { id, long, lat, line } = event;
             const hovered = hoveredEvent?.id === event.id;
             const selected = selectedEvent?.id === event.id;
@@ -139,6 +139,7 @@ const MainMap: FC<MainMapProps> = ({
                 >
                   <Pin
                     selected={hovered || selected}
+                    isMajor={event.severity === "Major"}
                     hasSelected={!!selectedEvent}
                     // onMouseEnter={() => {
                     //   setHoveredEvent({ ...event, scrollToListItem: true });
@@ -149,7 +150,11 @@ const MainMap: FC<MainMapProps> = ({
                   />
                 </Marker>
                 {line && (
-                  <MapLine lineString={line} hasSelected={!!selectedEvent} />
+                  <MapLine
+                    lineString={line}
+                    isMajor={event.severity === "Major"}
+                    hasSelected={!!selectedEvent}
+                  />
                 )}
               </Fragment>
             );
@@ -158,6 +163,7 @@ const MainMap: FC<MainMapProps> = ({
           {selectedEvent?.line && (
             <MapLine
               lineString={selectedEvent?.line}
+              isMajor={selectedEvent.severity === "Major"}
               selected
               hasSelected={!!selectedEvent}
             />

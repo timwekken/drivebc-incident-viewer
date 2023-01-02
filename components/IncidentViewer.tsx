@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
-import { MajorEvent } from "../types/MajorEvent";
+import { Event } from "../types/Event";
 import MainMap from "./MainMap";
 import ListPanel from "./ListPanel";
 import { useRouter } from "next/router";
@@ -9,11 +9,12 @@ import { useRouter } from "next/router";
 const IncidentViewer = ({ showDemo }: { showDemo?: boolean }) => {
   const router = useRouter();
   const { eventId } = router.query;
-  const [majorEvents, setMajorEvents] = useState<MajorEvent[]>([]);
-  const [hoveredEvent, setHoveredEvent] = useState<MajorEvent | null>(null);
-  const [selectedEvent, setSelectedEvent] = useState<
-    MajorEvent | null | undefined
-  >(undefined);
+
+  const [events, setEvents] = useState<Event[]>([]);
+  const [hoveredEvent, setHoveredEvent] = useState<Event | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     if (router.isReady) {
@@ -25,8 +26,9 @@ const IncidentViewer = ({ showDemo }: { showDemo?: boolean }) => {
         )
         .then(({ data }) => {
           if (data) {
+            console.log(data.filter((event: any) => event[0] === "INCIDENT"));
             const latestEvents = data
-              .filter((event: any) => event[7] === "Major")
+              .filter((event: any) => event[0] === "INCIDENT")
               .map(
                 ([
                   type_caps,
@@ -43,20 +45,22 @@ const IncidentViewer = ({ showDemo }: { showDemo?: boolean }) => {
                 ]: any) => {
                   return {
                     id: String(eventCode),
+                    type: type_caps,
                     lat: Number(lat),
                     long: Number(long),
                     name: `${name} ${direction}`,
                     time: dayjs(String(time)),
                     description: String(description),
+                    severity,
                   };
                 }
               )
-              .sort((a: MajorEvent, b: MajorEvent) => {
+              .sort((a: Event, b: Event) => {
                 return a?.time.diff(b?.time) > 0 ? -1 : 1;
               });
-            setMajorEvents(latestEvents);
+            setEvents(latestEvents);
             const latestEventsIds = latestEvents.map(
-              (event: MajorEvent) => event.id
+              (event: Event) => event.id
             );
             axios
               .get("/api/get_events_with_polylines", {
@@ -64,7 +68,7 @@ const IncidentViewer = ({ showDemo }: { showDemo?: boolean }) => {
               })
               .then(({ data }) => {
                 const updatedEventsWithLines = latestEvents.map(
-                  (event: MajorEvent) => {
+                  (event: Event) => {
                     const { _id, bbox, line } = data.find(
                       (data: any) => data._id == event.id
                     );
@@ -83,7 +87,7 @@ const IncidentViewer = ({ showDemo }: { showDemo?: boolean }) => {
                     return updatedEvent;
                   }
                 );
-                setMajorEvents(updatedEventsWithLines);
+                setEvents(updatedEventsWithLines);
               });
           }
         });
@@ -109,13 +113,13 @@ const IncidentViewer = ({ showDemo }: { showDemo?: boolean }) => {
 
   const isLoading =
     !router.isReady ||
-    !majorEvents.length ||
+    !events.length ||
     !!(eventId && selectedEvent === undefined);
 
   return (
     <div className="flex flex-col sm:flex-row h-full max-h-screen">
       <MainMap
-        majorEvents={majorEvents}
+        events={events}
         hoveredEvent={hoveredEvent}
         setHoveredEvent={setHoveredEvent}
         selectedEvent={selectedEvent}
@@ -123,7 +127,7 @@ const IncidentViewer = ({ showDemo }: { showDemo?: boolean }) => {
         isLoading={isLoading}
       />
       <ListPanel
-        majorEvents={majorEvents}
+        events={events}
         hoveredEvent={hoveredEvent}
         setHoveredEvent={setHoveredEvent}
         selectedEvent={selectedEvent}

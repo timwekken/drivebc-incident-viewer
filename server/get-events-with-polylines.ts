@@ -2,7 +2,7 @@ import dbo from "./db-connection";
 import axios from "axios";
 import polyline from "@mapbox/polyline";
 
-const MAJOR_EVENTS_COLLECTION = "major_events";
+const EVENTS_COLLECTION = "events";
 
 const generateAndSaveMissingEventsWithPolylines = async (
   missingEventIds: string[]
@@ -17,31 +17,31 @@ const generateAndSaveMissingEventsWithPolylines = async (
       const bbox = data?.features?.[0]?.bbox;
       const coords = data?.features?.[0]?.geometry?.coordinates;
       const line = polyline.encode(coords);
-      const majorEventDocument: any = {
+      const eventDocument: any = {
         _id: eventId,
         bbox,
         line,
       };
       dbConnect
-        .collection(MAJOR_EVENTS_COLLECTION)
-        .insertOne(majorEventDocument)
+        .collection(EVENTS_COLLECTION)
+        .insertOne(eventDocument)
         .then((result) => {
           console.log(`Added a new match with id ${result.insertedId}`);
         })
         .catch((err) => {
           console.log("Error inserting matches!", err);
         });
-      return majorEventDocument;
+      return eventDocument;
     })
   );
 };
 
-const getMajorEventsWithPolylines = async (eventIds: string[]) => {
+const getEventsWithPolylines = async (eventIds: string[]) => {
   const dbConnect = dbo.getDb();
   return new Promise((resolve, reject) => {
     // get exisitng polylines from the db
     dbConnect
-      .collection(MAJOR_EVENTS_COLLECTION)
+      .collection(EVENTS_COLLECTION)
       .find({ _id: { $in: eventIds } })
       .limit(100)
       .toArray()
@@ -64,4 +64,4 @@ const getMajorEventsWithPolylines = async (eventIds: string[]) => {
   });
 };
 
-export default getMajorEventsWithPolylines;
+export default getEventsWithPolylines;
