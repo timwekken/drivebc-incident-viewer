@@ -1,10 +1,12 @@
-import dbo from "./db-connection.js";
+import dbo from "./db-connection";
 import axios from "axios";
 import polyline from "@mapbox/polyline";
 
 const MAJOR_EVENTS_COLLECTION = "major_events";
 
-const generateAndSaveMissingEventsWithPolylines = async (missingEventIds) => {
+const generateAndSaveMissingEventsWithPolylines = async (
+  missingEventIds: string[]
+) => {
   const dbConnect = dbo.getDb();
   return await Promise.all(
     missingEventIds.map(async (eventId) => {
@@ -15,7 +17,7 @@ const generateAndSaveMissingEventsWithPolylines = async (missingEventIds) => {
       const bbox = data?.features?.[0]?.bbox;
       const coords = data?.features?.[0]?.geometry?.coordinates;
       const line = polyline.encode(coords);
-      const majorEventDocument = {
+      const majorEventDocument: any = {
         _id: eventId,
         bbox,
         line,
@@ -34,7 +36,7 @@ const generateAndSaveMissingEventsWithPolylines = async (missingEventIds) => {
   );
 };
 
-const getMajorEventsWithPolylines = async (eventIds) => {
+const getMajorEventsWithPolylines = async (eventIds: string[]) => {
   const dbConnect = dbo.getDb();
   return new Promise((resolve, reject) => {
     // get exisitng polylines from the db
@@ -43,9 +45,11 @@ const getMajorEventsWithPolylines = async (eventIds) => {
       .find({ _id: { $in: eventIds } })
       .limit(100)
       .toArray()
-      .then(async (eventsWithPolylines) => {
+      .then(async (eventsWithPolylines: any) => {
         // console.log("RESULTS", eventsWithPolylines);
-        const existingEventIds = eventsWithPolylines.map((event) => event._id);
+        const existingEventIds: string[] = eventsWithPolylines.map(
+          (event: any) => event._id
+        );
         const missingEventIds = eventIds.filter(
           (eventId) => !existingEventIds.includes(eventId)
         );

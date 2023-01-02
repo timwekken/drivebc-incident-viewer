@@ -1,25 +1,16 @@
 import React, {
+  FC,
   Fragment,
   useState,
   useEffect,
-  useRef,
   useCallback,
-  FC,
   useMemo,
 } from "react";
-import Map, { Marker, Popup, MapRef } from "react-map-gl";
-import mapboxgl from "mapbox-gl";
-
+import Map, { Marker, Popup } from "react-map-gl";
 import { MajorEvent } from "../types/MajorEvent";
 import Pin from "./Pin";
 import MapLine from "./MapLine";
 import Loader from "./Loader";
-
-// TODO:
-// Format date with dayjs
-// Links in description
-// Closest webcams
-// Get users location and show that area??
 
 // TODO: SECURE THIS
 const REACT_APP_MAPBOX_TOKEN =
@@ -42,30 +33,34 @@ const MainMap: FC<MainMapProps> = ({
   setSelectedEvent,
   isLoading = false,
 }) => {
-  const mapRef = useRef<MapRef>();
+  const [map, setMap] = useState<any>(null);
 
   // const [popupInfo, setPopupInfo] = useState<MajorEvent | null>(null);
 
-  const getBoundsFromCoords = ([swLong, swLat, neLon, neLat]: number[]) => {
-    const sw = new mapboxgl.LngLat(swLong, swLat);
-    const ne = new mapboxgl.LngLat(neLon, neLat);
-    return new mapboxgl.LngLatBounds(sw, ne);
-  };
-
-  const flyToCoords = useCallback(([long, lat]: any) => {
-    mapRef.current?.flyTo({ center: [long, lat] });
-  }, []);
+  const flyToCoords = useCallback(
+    ([long, lat]: any) => {
+      map?.flyTo({ center: [long, lat] });
+    },
+    [map]
+  );
 
   const fitToBounds = useCallback(
     (bounds: number[], animate: boolean = false) => {
-      if (bounds)
-        mapRef.current?.fitBounds(getBoundsFromCoords(bounds), {
-          maxZoom: 13,
-          padding: 32,
-          animate,
-        });
+      if (bounds) {
+        map?.fitBounds(
+          [
+            [bounds[0], bounds[1]],
+            [bounds[2], bounds[3]],
+          ],
+          {
+            maxZoom: 13,
+            padding: 32,
+            animate,
+          }
+        );
+      }
     },
-    []
+    [map]
   );
 
   useEffect(() => {
@@ -83,21 +78,27 @@ const MainMap: FC<MainMapProps> = ({
     setSelectedEvent({ ...event, scrollToListItem: true });
   };
 
-  if (mapRef?.current) {
-    mapRef.current.on("click", () => {
-      setSelectedEvent(null);
-    });
-  }
+  useEffect(() => {
+    if (map) {
+      map.on("click", () => {
+        setSelectedEvent(null);
+      });
+    }
+  }, [map]);
+
+  useEffect(() => {
+    if (map && selectedEvent?.fromURL && selectedEvent?.bbox) {
+      fitToBounds(selectedEvent.bbox);
+    }
+  }, [map, selectedEvent]);
 
   const viewportBounds = useMemo(() => {
     if (selectedEvent?.bbox) {
-      return getBoundsFromCoords(selectedEvent.bbox);
-    } else {
-      return getBoundsFromCoords([
-        -124.822354, 48.052736, -120.49436, 56.567183,
-      ]);
+      return selectedEvent.bbox;
+    } else if (!isLoading) {
+      return [-124.822354, 48.052736, -120.49436, 56.567183];
     }
-  }, [selectedEvent]);
+  }, [selectedEvent, isLoading]);
 
   return (
     <div className="flex-1 h-[50vh] md:h-screen">
@@ -105,10 +106,12 @@ const MainMap: FC<MainMapProps> = ({
         <Loader />
       ) : (
         <Map
-          ref={mapRef as any}
+          ref={(ref) => setMap(ref)}
           initialViewState={{
-            padding: { left: 32, right: 32, top: 32, bottom: 32 },
-            bounds: viewportBounds,
+            bounds: [
+              [viewportBounds[0], viewportBounds[1]],
+              [viewportBounds[2], viewportBounds[3]],
+            ],
           }}
           mapStyle="mapbox://styles/mapbox/navigation-day-v1"
           mapboxAccessToken={REACT_APP_MAPBOX_TOKEN}
