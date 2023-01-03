@@ -28,7 +28,7 @@ export default function Document() {
         />
         <meta
           property="og:image"
-          content={`https://api.mapbox.com/styles/v1/mapbox/navigation-day-v1/static/pin-l+f74e4e(-122.4,50.6)/-124.4,54.6,4.35,0,0/600x600?access_token=${process.env.NEXT_PUBLIC_APP_MAPBOX_TOKEN}`}
+          content={`https://api.mapbox.com/styles/v1/mapbox/navigation-day-v1/static/pin-l+f74e4e(-122.4,50.6)/-124.4,54.6,4.35,0,0/600x600?access_token=${process.env.NEXT_PUBLIC_STATIC_APP_MAPBOX_TOKEN}`}
         />
         <meta property="og:url" content="https://www.easydrivebc.ca" />
         <meta name="twitter:card" content="summary_large_image" />
