@@ -6,7 +6,8 @@ const AboutIconBG = ({ isAbsolute = false }: { isAbsolute?: boolean }) => (
     fill="none"
     viewBox="0 0 24 24"
     stroke-width="1.5"
-    stroke="#DDD"
+    stroke="#3f5661"
+    opacity={0.5}
     className={`${
       isAbsolute ? "absolute w-[80px]" : "inline-block w-8 h-8 mt-1 ml-1"
     }`}
@@ -46,8 +47,8 @@ const AdjustedBlurb = ({ isMobile = false, className, children }: any) => {
 
   return (
     <div
-      className={`${className} absolute md:relative bg-white w-full shadow-md 
-          border-slate-200 border-b-[1px] z-50 text-sm text-[#555]`}
+      className={`${className} absolute md:relative bg-white md:w-full shadow-md 
+          border-slate-200 border-b-[1px] z-50 text-sm text-[#3f5661]`}
     >
       {!isOpen ? (
         <button
@@ -59,7 +60,7 @@ const AdjustedBlurb = ({ isMobile = false, className, children }: any) => {
           }}
         >
           <AboutIconBG />
-          <span className="middle pl-1">Learn More</span>
+          <span className="middle pl-1 pr-2">About</span>
         </button>
       ) : (
         <div className="pt-4 pb-4 pr-8">
@@ -86,7 +87,7 @@ const AdjustedBlurb = ({ isMobile = false, className, children }: any) => {
 const AboutBlurb = ({ children }: any) => {
   return (
     <>
-      <AdjustedBlurb className={"md:hidden"} isMobile>
+      <AdjustedBlurb className={"md:hidden right-0 rounded-md"} isMobile>
         {children}
       </AdjustedBlurb>
       <AdjustedBlurb className={"hidden md:block"}>{children}</AdjustedBlurb>
