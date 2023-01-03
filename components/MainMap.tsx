@@ -101,7 +101,7 @@ const MainMap: FC<MainMapProps> = ({
   }, [selectedEvent, isLoading]);
 
   return (
-    <div className="flex-1 h-[50vh] md:h-screen">
+    <div className="flex-[3] h-full">
       {isLoading || !viewportBounds ? (
         <Loader />
       ) : (

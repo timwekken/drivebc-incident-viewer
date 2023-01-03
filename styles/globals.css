@@ -17,11 +17,11 @@ p {
   word-wrap: break-word;
 }
 
-.mapboxgl-map {
-  height: 100vh !important;
+a {
+  color: black;
+  font-style: italic;
 }
-@media screen and (max-width: 639px) {
-  .mapboxgl-map {
-    height: 50vh !important;
-  }
+
+a:hover {
+  color: #e00;
 }

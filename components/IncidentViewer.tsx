@@ -67,6 +67,7 @@ const IncidentViewer = ({ showDemo }: { showDemo?: boolean }) => {
                 params: { eventIds: latestEventsIds },
               })
               .then(({ data }) => {
+                let hasSelectedEvent = false;
                 const updatedEventsWithLines = latestEvents.map(
                   (event: Event) => {
                     const { _id, bbox, line } = data.find(
@@ -78,6 +79,7 @@ const IncidentViewer = ({ showDemo }: { showDemo?: boolean }) => {
                       line,
                     };
                     if (_id === eventId) {
+                      hasSelectedEvent = true;
                       setSelectedEvent({
                         ...updatedEvent,
                         scrollToListItem: true,
@@ -88,6 +90,9 @@ const IncidentViewer = ({ showDemo }: { showDemo?: boolean }) => {
                   }
                 );
                 setEvents(updatedEventsWithLines);
+                if (!hasSelectedEvent) {
+                  setSelectedEvent(null);
+                }
               });
           }
         });
@@ -117,7 +122,7 @@ const IncidentViewer = ({ showDemo }: { showDemo?: boolean }) => {
     !!(eventId && selectedEvent === undefined);
 
   return (
-    <div className="flex flex-col sm:flex-row h-full max-h-screen">
+    <div className="flex flex-col sm:flex-row h-full max-h-full">
       <MainMap
         events={events}
         hoveredEvent={hoveredEvent}
@@ -132,7 +137,7 @@ const IncidentViewer = ({ showDemo }: { showDemo?: boolean }) => {
         setHoveredEvent={setHoveredEvent}
         selectedEvent={selectedEvent}
         setSelectedEvent={setSelectedEvent}
-        isLoading={isLoading}
+        isLoading={!events.length}
       />
     </div>
   );

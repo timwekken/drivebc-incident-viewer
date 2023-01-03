@@ -50,7 +50,7 @@ const ListPanel: FC<ListPanelProps> = ({
 
   return (
     <div
-      className="flex-1 w-full h-full shadow-lg border-slate-200 border-l-[1px] overflow-auto md:max-w-md sm:border-top-[1px]"
+      className="flex-[2] w-full h-full shadow-lg border-slate-200 border-l-[1px] overflow-auto md:max-w-md sm:border-top-[1px]"
       style={{ zIndex: 1 }}
     >
       {isLoading ? (
