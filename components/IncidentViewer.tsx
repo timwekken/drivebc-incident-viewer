@@ -26,7 +26,6 @@ const IncidentViewer = ({ showDemo }: { showDemo?: boolean }) => {
         )
         .then(({ data }) => {
           if (data) {
-            console.log(data.filter((event: any) => event[0] === "INCIDENT"));
             const latestEvents = data
               .filter((event: any) => event[0] === "INCIDENT")
               .map(

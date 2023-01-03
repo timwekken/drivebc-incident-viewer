@@ -12,10 +12,6 @@ import Pin from "./Pin";
 import MapLine from "./MapLine";
 import Loader from "./Loader";
 
-// TODO: SECURE THIS
-const REACT_APP_MAPBOX_TOKEN =
-  "pk.eyJ1IjoidGltd2Vra2VuIiwiYSI6ImNsYzJyYWtudTFqaXgzd21uczF5N2dyYWQifQ.v6I8NiRRsrO8DtH8GvY6dQ";
-
 interface MainMapProps {
   events: Event[];
   hoveredEvent: Event | null;
@@ -114,7 +110,7 @@ const MainMap: FC<MainMapProps> = ({
             ],
           }}
           mapStyle="mapbox://styles/mapbox/navigation-day-v1"
-          mapboxAccessToken={REACT_APP_MAPBOX_TOKEN}
+          mapboxAccessToken={process.env.NEXT_PUBLIC_APP_MAPBOX_TOKEN}
         >
           {events.map((event) => {
             const { id, long, lat, line } = event;
