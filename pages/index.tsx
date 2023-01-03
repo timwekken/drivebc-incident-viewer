@@ -8,7 +8,7 @@ export default function Viewer() {
   return (
     <>
       <Head>
-        <title>DriveBC Incident Viewer</title>
+        <title>EasyDriveBC - DriveBC Incident Viewer</title>
       </Head>
       <div className="h-full flex flex-col">
         <AboutBlurb>

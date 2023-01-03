@@ -7,7 +7,9 @@ export default function Dec24DemoViewer() {
   return (
     <>
       <Head>
-        <title>DriveBC Incident Viewer - Dec 24th 2022 Demo</title>
+        <title>
+          EasyDriveBC - DriveBC Incident Viewer | Dec 24th 2022 Demo
+        </title>
       </Head>
       <div className="h-full flex flex-col">
         <AboutBlurb>
