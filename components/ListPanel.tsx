@@ -68,7 +68,7 @@ const ListPanel: FC<ListPanelProps> = ({
                   className={`w-full border-t-[1px] ${
                     isSelected
                       ? `border-t-[3px] p-6 bg-slate-50 ${
-                          isMajor ? `border-[#e00]` : `border-[#FF5F15]`
+                          isMajor ? `border-[#d00]` : `border-[#FF580A]`
                         }`
                       : "p-4 pl-6 pr-6 border-slate-200"
                   } hover:bg-slate-50 text-left`}
@@ -80,7 +80,7 @@ const ListPanel: FC<ListPanelProps> = ({
                     <h2
                       className={`text-lg font-bold ${
                         isSelected &&
-                        `${isMajor ? `text-[#e00]` : `text-[#FF5F15]`}`
+                        `${isMajor ? `text-[#d00]` : `text-[#FF580A]`}`
                       }`}
                     >
                       <span className="float-left mr-2 mt-[2px]">
