@@ -19,7 +19,7 @@ export default function Viewer() {
             <Link href="/dec24demo">Christmas Eve 2022</Link>, when I was
             planning my drive from Vancouver to the Interior. Identify travel
             advisories on this easy-to-use, mobile-friendly map to get there
-            safely.
+            safely. <a href="mailto:timwekken@gmail.com">Contact me</a>
           </p>
         </AboutBlurb>
         <div className="flex-1 overflow-hidden">
