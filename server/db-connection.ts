@@ -1,7 +1,7 @@
 import { MongoClient } from "mongodb";
 // TODO: Move to env
 const connectionString =
-  "mongodb+srv://admin:uG7RnnE7wqWoEipM@cluster0.sb2867x.mongodb.net/?retryWrites=true&w=majority";
+  "mongodb+srv://admin:uG7RnnE7wqWoEipM@z@cluster1.trujpua.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(connectionString);
 
 const dbName = "drivebc";
