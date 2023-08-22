@@ -2,7 +2,12 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+First, ensure that the following environment variables are set:
+
+- NEXT_PUBLIC_APP_MAPBOX_TOKEN
+- NEXT_PUBLIC_STATIC_APP_MAPBOX_TOKEN
+
+Then, run the development server:
 
 ```bash
 npm run dev
