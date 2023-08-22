@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 import WarningIcon from "./WarningIcon";
 import Loader from "./Loader";
 import { MAJOR_COLOR, WARNING_COLOR } from "../styles/colors";
+import { getSvgIconFromType } from "./Icons";
 
 interface ListPanelProps {
   events: Event[];
@@ -58,9 +59,11 @@ const ListPanel: FC<ListPanelProps> = ({
       ) : (
         <ul className="w-full h-full">
           {events.map((event) => {
-            const { id, name, time, description } = event;
+            const { id, type, name, time, description } = event;
             const isSelected =
               selectedEvent?.id === event?.id || hoveredEvent?.id === event?.id;
+            
+            const svg = getSvgIconFromType(type, description);
 
             return (
               <li key={id} ref={refs[event.id]}>
@@ -84,7 +87,24 @@ const ListPanel: FC<ListPanelProps> = ({
                       }`}
                     >
                       <span className="float-left mr-2 mt-[2px]">
-                        <WarningIcon />
+                        {svg ? 
+                          (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="currentColor"
+                              viewBox={svg.viewBox}
+                              strokeWidth="1.5"
+                              stroke="none"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d={svg.path}
+                              />
+                            </svg>
+                          ) : <WarningIcon />
+                        }
                       </span>
                       {name}
                       {/* <span className="float-right mr-2 mt-[2px]">

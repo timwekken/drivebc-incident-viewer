@@ -135,7 +135,9 @@ const MainMap: FC<MainMapProps> = ({
                 >
                   <Pin
                     selected={hovered || selected}
+                    type={event.type}
                     isMajor={event.severity === "Major"}
+                    description={event.description}
                     hasSelected={!!selectedEvent}
                     // onMouseEnter={() => {
                     //   setHoveredEvent({ ...event, scrollToListItem: true });
