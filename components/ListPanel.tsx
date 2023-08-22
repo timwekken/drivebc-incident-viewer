@@ -65,6 +65,8 @@ const ListPanel: FC<ListPanelProps> = ({
             
             const svg = getSvgIconFromType(type, description);
 
+            const desc = description.split(/\b(next update|last updated)\b/i);
+
             return (
               <li key={id} ref={refs[event.id]}>
                 <button
@@ -142,7 +144,13 @@ const ListPanel: FC<ListPanelProps> = ({
                       {dayjs(time).format("MMMM D, YYYY h:mm A")}
                     </i>
                   </div>
-                  {isSelected && <p className="pt-2">{description}</p>}
+                  {isSelected && (
+                    <>
+                      <p className="pt-2">{desc[0]}</p>
+                      {desc.length >= 2 && <p className="pt-2 italic text-slate-600">{desc[1]}{desc[2]}</p>}
+                      {/* {desc.length >= 4 && <p className="pt-2 text-sm italic text-slate-600">{desc[3]}{desc[4]}</p>} */}
+                    </>
+                  )}
                 </button>
               </li>
             );

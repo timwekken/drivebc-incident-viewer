@@ -71,7 +71,7 @@ export const getSvgIconFromType = (type: string, description: string) => {
             return SPECIAL_EVENT_ICON;
         case 'INCIDENT':
             const desc = description.toLowerCase();
-            if (desc.includes('landslide') || desc.includes('washout')  || desc.includes('mudslide')) {
+            if (desc.includes('landslide') || desc.includes('washout') || desc.includes('mudslide') || desc.includes('falling rocks')) {
                 return LANDSLIDE_ICON;
             } else if (desc.includes('avalanche')) {
                 return AVALANCHE_ICON;
@@ -81,10 +81,10 @@ export const getSvgIconFromType = (type: string, description: string) => {
                 return FIRE_ICON;
             } else if (desc.includes('wildlife')) {
                 return WILDLIFE_ICON;
-            } else if (desc.includes('rain')) {
-                return RAIN_ICON;
-            } else if (desc.includes('winter') || desc.includes('snow ') || desc.includes('snow.')) { // add ice (but not service)
+            } else if (desc.includes('winter') || /\bice\b/g.test(desc) || /\bsnow\b/g.test(desc) || /\bsnowfall\b/g.test(desc)) { // add ice (but not service)
                 return WINTER_ICON;
+            } else if (desc.includes('rain') || desc.includes('flood')) {
+                return RAIN_ICON;
             } else if (desc.includes('ferry')) {  
                 return FERRY_ICON;
             } else if (desc.includes('bridge')) {
