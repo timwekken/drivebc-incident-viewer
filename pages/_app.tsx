@@ -1,5 +1,6 @@
 import type { AppProps } from "next/app";
 import * as Sentry from "@sentry/nextjs";
+import { Analytics } from '@vercel/analytics/react';
 import "../styles/globals.css";
 
 Sentry.init({
@@ -8,5 +9,10 @@ Sentry.init({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+  return (
+    <>
+      <Component {...pageProps} />
+      <Analytics />
+    </>
+  );
 }
