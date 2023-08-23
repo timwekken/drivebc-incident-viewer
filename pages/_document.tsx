@@ -1,4 +1,5 @@
 import { Html, Head, Main, NextScript } from "next/document";
+import { Analytics } from '@vercel/analytics/react';
 
 export default function Document() {
   return (
@@ -8,7 +9,7 @@ export default function Document() {
           name="description"
           content="Do you find it a challenge to navigate DriveBC's website?
             Understanding incidents on routes relevant to me has always been a
-            struggle, which inspired this new app! Identify travel
+            struggle, which inspired this new app that uses data from DriveBC! Identify travel
             advisories on this easy-to-use, mobile-friendly map to get there
             safely."
         />
@@ -22,7 +23,7 @@ export default function Document() {
           property="og:description"
           content="Do you find it a challenge to navigate DriveBC's website?
             Understanding incidents on routes relevant to me has always been a
-            struggle, which inspired this new app! Identify travel
+            struggle, which inspired this new app that uses data from DriveBC! Identify travel
             advisories on this easy-to-use, mobile-friendly map to get there
             safely."
         />
@@ -42,6 +43,7 @@ export default function Document() {
       <body>
         <Main />
         <NextScript />
+        <Analytics />
       </body>
     </Html>
   );
