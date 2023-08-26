@@ -6,7 +6,7 @@ import MainMap from "./MainMap";
 import ListPanel from "./ListPanel";
 import { useRouter } from "next/router";
 
-const IncidentViewer = ({ showDemo }: { showDemo?: boolean }) => {
+const IncidentViewer = ({ aboutBlurb, showDemo }: { aboutBlurb: JSX.Element, showDemo?: boolean }) => {
   const router = useRouter();
   const { eventId } = router.query;
 
@@ -123,6 +123,7 @@ const IncidentViewer = ({ showDemo }: { showDemo?: boolean }) => {
   return (
     <div className="flex flex-col sm:flex-row h-full max-h-full">
       <MainMap
+        aboutBlurb={aboutBlurb}
         events={events}
         hoveredEvent={hoveredEvent}
         setHoveredEvent={setHoveredEvent}

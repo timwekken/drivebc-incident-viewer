@@ -40,15 +40,11 @@ const CloseMark = () => (
   </svg>
 );
 
-const AdjustedBlurb = ({ isMobile = false, className, children }: any) => {
-  const [isOpen, setIsOpen] = useState(!isMobile);
-
-  if (!isMobile && !isOpen) return null;
-
+const AboutBlurb = ({ children, isOpen, setIsOpen }: any) => {
   return (
     <div
-      className={`${className} absolute md:relative bg-white md:w-full shadow-md 
-          border-slate-200 border-b-[1px] z-50 text-sm text-[#3f5661]`}
+      className={`absolute z-50 right-0 rounded-bl-md bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] 
+                border-slate-200 border-b-[1px] text-sm text-[#3f5661]`}
     >
       {!isOpen ? (
         <button
@@ -67,31 +63,18 @@ const AdjustedBlurb = ({ isMobile = false, className, children }: any) => {
           <AboutIconBG isAbsolute />
           <div className="relative z-10 ml-[80px]">
             <>
-              {isMobile && (
-                <button
-                  className="absolute -right-6"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <CloseMark />
-                </button>
-              )}
+              <button
+                className="absolute -right-6"
+                onClick={() => setIsOpen(false)}
+              >
+                <CloseMark />
+              </button>
               {children}
             </>
           </div>
         </div>
       )}
     </div>
-  );
-};
-
-const AboutBlurb = ({ children }: any) => {
-  return (
-    <>
-      <AdjustedBlurb className={"md:hidden right-0 rounded-md"} isMobile>
-        {children}
-      </AdjustedBlurb>
-      <AdjustedBlurb className={"hidden md:block"}>{children}</AdjustedBlurb>
-    </>
   );
 };
 

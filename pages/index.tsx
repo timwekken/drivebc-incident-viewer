@@ -1,7 +1,5 @@
-/* eslint-disable react/no-unescaped-entities */
 import Head from "next/head";
 import IncidentViewer from "../components/IncidentViewer";
-import AboutBlurb from "../components/AboutBlurb";
 import Link from "next/link";
 
 export default function Viewer() {
@@ -10,8 +8,8 @@ export default function Viewer() {
       <Head>
         <title>EasyDriveBC - DriveBC Incident Viewer</title>
       </Head>
-      <div className="h-full flex flex-col">
-        <AboutBlurb>
+      <IncidentViewer 
+        aboutBlurb={
           <p>
             Do you find it a challenge to navigate DriveBC's website?
             Understanding incidents on routes relevant to me has always been a
@@ -21,11 +19,8 @@ export default function Viewer() {
             advisories on this easy-to-use, mobile-friendly map to get there
             safely. All data is live from DriveBC. <a href="mailto:timwekken@gmail.com">Contact me</a>
           </p>
-        </AboutBlurb>
-        <div className="flex-1 overflow-hidden">
-          <IncidentViewer />
-        </div>
-      </div>
+        }
+      />
     </>
   );
 }

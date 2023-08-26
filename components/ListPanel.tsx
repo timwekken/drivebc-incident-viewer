@@ -43,7 +43,7 @@ const ListPanel: FC<ListPanelProps> = ({
     const goToEvent = hoveredEvent || selectedEvent;
     if (goToEvent?.scrollToListItem) {
       refs[goToEvent.id].current.scrollIntoView({
-        behavior: goToEvent?.fromURL ? "instant" : "smooth",
+        behavior: "instant", // could have it scroll like this: goToEvent?.fromURL ? "instant" : "smooth",
         block: "start",
       });
     }

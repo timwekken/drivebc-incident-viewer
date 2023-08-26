@@ -11,8 +11,11 @@ import { Event } from "../types/Event";
 import Pin from "./Pin";
 import MapLine from "./MapLine";
 import Loader from "./Loader";
+import TitleLogo from "./TitleLogo";
+import AboutBlurb from "./AboutBlurb";
 
 interface MainMapProps {
+  aboutBlurb: JSX.Element;
   events: Event[];
   hoveredEvent: Event | null;
   setHoveredEvent: (event: Event | null) => void;
@@ -22,6 +25,7 @@ interface MainMapProps {
 }
 
 const MainMap: FC<MainMapProps> = ({
+  aboutBlurb,
   events,
   hoveredEvent,
   setHoveredEvent,
@@ -29,6 +33,7 @@ const MainMap: FC<MainMapProps> = ({
   setSelectedEvent,
   isLoading = false,
 }) => {
+  const [aboutIsOpen, setAboutIsOpen] = useState(false);
   const [map, setMap] = useState<any>(null);
 
   // const [popupInfo, setPopupInfo] = useState<Event | null>(null);
@@ -97,7 +102,11 @@ const MainMap: FC<MainMapProps> = ({
   }, [selectedEvent, isLoading]);
 
   return (
-    <div className="flex-[3] h-full">
+    <div className="flex-[3] h-full relative">
+      <>
+        <TitleLogo onClick={() => setAboutIsOpen(true)} />
+        <AboutBlurb isOpen={aboutIsOpen} setIsOpen={setAboutIsOpen}>{aboutBlurb}</AboutBlurb>
+      </>
       {isLoading || !viewportBounds ? (
         <Loader />
       ) : (
