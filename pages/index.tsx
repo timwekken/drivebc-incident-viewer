@@ -11,7 +11,7 @@ export default function Viewer() {
       <IncidentViewer 
         aboutBlurb={
           <p>
-            Do you find it a challenge to navigate DriveBC's website?
+            Do you find it a challenge to navigate DriveBC&apos;s website?
             Understanding incidents on routes relevant to me has always been a
             struggle, which inspired this new app! I hit my limit on{" "}
             <Link href="/dec24demo">Christmas Eve 2022</Link>, when I was

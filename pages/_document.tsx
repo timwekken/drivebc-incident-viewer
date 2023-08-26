@@ -33,7 +33,7 @@ export default function Document() {
         <meta property="og:url" content="https://www.easydrivebc.ca" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:creator" content="@wekkent" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/road-icon.svg" />
         <link
           href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css"
           rel="stylesheet"
