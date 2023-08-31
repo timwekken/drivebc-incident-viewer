@@ -27,7 +27,7 @@ const IncidentViewer = ({ aboutBlurb, showDemo }: { aboutBlurb: JSX.Element, sho
         .then(({ data }) => {
           if (data) {
             const latestEvents = data
-              .filter((event: any) => event[0] === "INCIDENT")
+              .filter((event: any) => event[0] === "INCIDENT") // TODO: Could expand beyond incidents?
               .map(
                 ([
                   type_caps,

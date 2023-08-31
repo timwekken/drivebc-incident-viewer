@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/update_events_for_datetime?key=W2Q9URmYZH",
+      "schedule": "0 12 * * *"
+    }
+  ]
+}
