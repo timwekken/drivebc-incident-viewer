@@ -1,100 +1,47 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import dayjs from "dayjs";
+import React, { FC, useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import { Event } from "../types/Event";
+import {
+  getEventsFromDriveBC,
+  getEventPolylinesFromDB,
+} from "../services/getEvents";
 import MainMap from "./MainMap";
 import ListPanel from "./ListPanel";
-import { useRouter } from "next/router";
 
-const IncidentViewer = ({ aboutBlurb, showDemo }: { aboutBlurb: JSX.Element, showDemo?: boolean }) => {
+interface IncidentViewerProps {
+  aboutBlurb: JSX.Element;
+  showDemo?: boolean;
+}
+
+const IncidentViewer: FC<IncidentViewerProps> = ({ aboutBlurb, showDemo }) => {
   const router = useRouter();
   const { eventId } = router.query;
 
   const [events, setEvents] = useState<Event[]>([]);
-  const [hoveredEvent, setHoveredEvent] = useState<Event | null>(null);
-  const [selectedEvent, setSelectedEvent] = useState<Event | null | undefined>(
-    undefined
-  );
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>();
+
+  // Get events from DriveBC and polylines from DB
+  // Ensure any event from the URL is selected
+  const fetchEvents = async () => {
+    const latestEvents = await getEventsFromDriveBC();
+    setEvents(latestEvents);
+    const latestEventsWithPolylineData = await getEventPolylinesFromDB(
+      latestEvents
+    );
+    setEvents(latestEventsWithPolylineData);
+    const selectedEvent = latestEventsWithPolylineData.find(
+      ({ id }) => id === eventId
+    );
+    setSelectedEvent(
+      selectedEvent
+        ? { ...selectedEvent, scrollToListItem: true, fromURL: true }
+        : null
+    );
+  };
 
   useEffect(() => {
     if (router.isReady) {
-      axios
-        .get(
-          showDemo
-            ? "/testData.json"
-            : "https://www.drivebc.ca/data/events.json"
-        )
-        .then(({ data }) => {
-          if (data) {
-            const latestEvents = data
-              .filter((event: any) => event[0] === "INCIDENT") // TODO: Could expand beyond incidents?
-              .map(
-                ([
-                  type_caps,
-                  lat,
-                  long,
-                  area,
-                  name,
-                  direction,
-                  type,
-                  severity,
-                  time,
-                  description,
-                  eventCode,
-                ]: any) => {
-                  return {
-                    id: String(eventCode),
-                    type: type_caps,
-                    lat: Number(lat),
-                    long: Number(long),
-                    name: `${name} ${direction}`,
-                    time: dayjs(String(time)),
-                    description: String(description),
-                    severity,
-                  };
-                }
-              )
-              .sort((a: Event, b: Event) => {
-                return a?.time.diff(b?.time) > 0 ? -1 : 1;
-              });
-            setEvents(latestEvents);
-            const latestEventsIds = latestEvents.map(
-              (event: Event) => event.id
-            );
-            axios
-              .get("/api/get_events_with_polylines", {
-                params: { eventIds: latestEventsIds },
-              })
-              .then(({ data }) => {
-                let hasSelectedEvent = false;
-                const updatedEventsWithLines = latestEvents.map(
-                  (event: Event) => {
-                    const { _id, bbox, line } = data.find(
-                      (data: any) => data._id == event.id
-                    );
-                    const updatedEvent = {
-                      ...event,
-                      bbox,
-                      line,
-                    };
-                    if (_id === eventId) {
-                      hasSelectedEvent = true;
-                      setSelectedEvent({
-                        ...updatedEvent,
-                        scrollToListItem: true,
-                        fromURL: true,
-                      });
-                    }
-                    return updatedEvent;
-                  }
-                );
-                setEvents(updatedEventsWithLines);
-                if (!hasSelectedEvent) {
-                  setSelectedEvent(null);
-                }
-              });
-          }
-        });
+      fetchEvents();
     }
   }, [router.isReady]);
 
@@ -125,16 +72,12 @@ const IncidentViewer = ({ aboutBlurb, showDemo }: { aboutBlurb: JSX.Element, sho
       <MainMap
         aboutBlurb={aboutBlurb}
         events={events}
-        hoveredEvent={hoveredEvent}
-        setHoveredEvent={setHoveredEvent}
         selectedEvent={selectedEvent}
         setSelectedEvent={setSelectedEvent}
         isLoading={isLoading}
       />
       <ListPanel
         events={events}
-        hoveredEvent={hoveredEvent}
-        setHoveredEvent={setHoveredEvent}
         selectedEvent={selectedEvent}
         setSelectedEvent={setSelectedEvent}
         isLoading={!events.length}

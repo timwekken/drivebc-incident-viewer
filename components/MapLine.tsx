@@ -1,42 +1,50 @@
 import React, { FC } from "react";
 import { Source, Layer } from "react-map-gl";
 import polyline from "@mapbox/polyline";
-import { MAJOR_COLOR, WARNING_COLOR, TERTIARY_COLOR } from "../styles/colors";
+import { theme } from "../tailwind.config.js";
 
-const MapLine: FC<{
+interface MapLineProps {
   lineString: string | null;
   isMajor?: boolean;
   selected?: boolean;
   hasSelected?: boolean;
-}> = ({ lineString, isMajor, selected, hasSelected = false }): JSX.Element => {
+}
+
+const MapLine: FC<MapLineProps> = ({
+  lineString,
+  isMajor,
+  selected,
+  hasSelected = false,
+}) => {
   const coordinates: [number, number][] = polyline.decode(lineString || "");
-  const selectedColor = isMajor ? MAJOR_COLOR : WARNING_COLOR;
-
-  const geojson: any = {
-    type: "FeatureCollection",
-    features: [
-      {
-        type: "geojson",
-        geometry: {
-          type: "LineString",
-          coordinates,
-        },
-      },
-    ],
-  };
-
-  const layerStyle: any = {
-    type: "line",
-    paint: {
-      "line-color": selected || !hasSelected ? selectedColor : TERTIARY_COLOR,
-      "line-opacity": !hasSelected ? 0.75 : selected ? 0.9 : 0.5,
-      "line-width": selected ? 4 : 3,
-    },
-  };
+  const colors: Record<string, any> = theme?.extend?.colors || {};
+  const typeColor = isMajor ? colors.major : colors.warning;
 
   return (
-    <Source type="geojson" data={geojson}>
-      <Layer {...layerStyle} />
+    <Source
+      type="geojson"
+      data={{
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            geometry: {
+              type: "LineString",
+              coordinates,
+            },
+            properties: {},
+          },
+        ],
+      }}
+    >
+      <Layer
+        type="line"
+        paint={{
+          "line-color": selected || !hasSelected ? typeColor : colors.default,
+          "line-opacity": !hasSelected ? 0.75 : selected ? 0.9 : 0.5,
+          "line-width": selected ? 4 : 3,
+        }}
+      />
     </Source>
   );
 };

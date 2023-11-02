@@ -11,7 +11,7 @@ export default function Dec24DemoViewer() {
         </title>
       </Head>
       <IncidentViewer
-        showDemo 
+        showDemo
         aboutBlurb={
           <p>
             These were all the DriveBC incidents on Christmas Eve 2022. Yikes!{" "}

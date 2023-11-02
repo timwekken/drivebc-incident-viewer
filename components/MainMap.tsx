@@ -6,19 +6,20 @@ import React, {
   useCallback,
   useMemo,
 } from "react";
-import Map, { Marker, Popup } from "react-map-gl";
+import Map, { Marker, MapRef, MapboxEvent } from "react-map-gl";
 import { Event } from "../types/Event";
-import Pin from "./Pin";
+import { formatBoundsForMap } from "../utils/mapUtils";
+import Pin from "./icons/Pin";
 import MapLine from "./MapLine";
 import Loader from "./Loader";
 import TitleLogo from "./TitleLogo";
 import AboutBlurb from "./AboutBlurb";
 
+const DEFAULT_VIEWPORT_BOUNDS = [-124.822354, 48.052736, -120.49436, 56.567183];
+
 interface MainMapProps {
   aboutBlurb: JSX.Element;
   events: Event[];
-  hoveredEvent: Event | null;
-  setHoveredEvent: (event: Event | null) => void;
   selectedEvent?: Event | null;
   setSelectedEvent: (event: Event | null) => void;
   isLoading?: boolean;
@@ -27,19 +28,15 @@ interface MainMapProps {
 const MainMap: FC<MainMapProps> = ({
   aboutBlurb,
   events,
-  hoveredEvent,
-  setHoveredEvent,
   selectedEvent,
   setSelectedEvent,
   isLoading = false,
 }) => {
   const [aboutIsOpen, setAboutIsOpen] = useState(false);
-  const [map, setMap] = useState<any>(null);
-
-  // const [popupInfo, setPopupInfo] = useState<Event | null>(null);
+  const [map, setMap] = useState<MapRef | null>(null);
 
   const flyToCoords = useCallback(
-    ([long, lat]: any) => {
+    ([long, lat]: [number, number]) => {
       map?.flyTo({ center: [long, lat] });
     },
     [map]
@@ -48,17 +45,11 @@ const MainMap: FC<MainMapProps> = ({
   const fitToBounds = useCallback(
     (bounds: number[], animate: boolean = false) => {
       if (bounds) {
-        map?.fitBounds(
-          [
-            [bounds[0], bounds[1]],
-            [bounds[2], bounds[3]],
-          ],
-          {
-            maxZoom: 13,
-            padding: 32,
-            animate,
-          }
-        );
+        map?.fitBounds(formatBoundsForMap(bounds), {
+          maxZoom: 13,
+          padding: 32,
+          animate,
+        });
       }
     },
     [map]
@@ -74,7 +65,7 @@ const MainMap: FC<MainMapProps> = ({
     }
   }, [selectedEvent]);
 
-  const handleMarkerClick = (e: any, event: any) => {
+  const handleMarkerClick = (e: MapboxEvent<MouseEvent>, event: Event) => {
     e.originalEvent.stopPropagation();
     setSelectedEvent({ ...event, scrollToListItem: true });
   };
@@ -97,7 +88,7 @@ const MainMap: FC<MainMapProps> = ({
     if (selectedEvent?.bbox) {
       return selectedEvent.bbox;
     } else if (!isLoading) {
-      return [-124.822354, 48.052736, -120.49436, 56.567183];
+      return DEFAULT_VIEWPORT_BOUNDS;
     }
   }, [selectedEvent, isLoading]);
 
@@ -105,7 +96,9 @@ const MainMap: FC<MainMapProps> = ({
     <div className="flex-[3] h-full relative">
       <>
         <TitleLogo onClick={() => setAboutIsOpen(true)} />
-        <AboutBlurb isOpen={aboutIsOpen} setIsOpen={setAboutIsOpen}>{aboutBlurb}</AboutBlurb>
+        <AboutBlurb isOpen={aboutIsOpen} setIsOpen={setAboutIsOpen}>
+          {aboutBlurb}
+        </AboutBlurb>
       </>
       {isLoading || !viewportBounds ? (
         <Loader />
@@ -113,25 +106,15 @@ const MainMap: FC<MainMapProps> = ({
         <Map
           ref={(ref) => setMap(ref)}
           initialViewState={{
-            bounds: [
-              [viewportBounds[0], viewportBounds[1]],
-              [viewportBounds[2], viewportBounds[3]],
-            ],
+            bounds: formatBoundsForMap(viewportBounds),
           }}
           mapStyle="mapbox://styles/mapbox/navigation-day-v1"
           mapboxAccessToken={process.env.NEXT_PUBLIC_APP_MAPBOX_TOKEN}
         >
           {events.map((event) => {
             const { id, long, lat, line } = event;
-            const hovered = hoveredEvent?.id === event.id;
             const selected = selectedEvent?.id === event.id;
-            let zIndex = 10;
-            if (selected) {
-              zIndex = 11;
-            } else if (hovered) {
-              zIndex = 12;
-            }
-
+            const isMajor = event.severity === "Major";
             return (
               <Fragment key={`event-${id}`}>
                 <Marker
@@ -139,34 +122,27 @@ const MainMap: FC<MainMapProps> = ({
                   longitude={long}
                   latitude={lat}
                   anchor="bottom"
-                  style={{ cursor: "pointer", zIndex }}
+                  style={{ zIndex: selected ? 11 : 10 }}
                   onClick={(e) => handleMarkerClick(e, event)}
                 >
                   <Pin
-                    selected={hovered || selected}
+                    selected={selected}
                     type={event.type}
-                    isMajor={event.severity === "Major"}
+                    isMajor={isMajor}
                     description={event.description}
                     hasSelected={!!selectedEvent}
-                    // onMouseEnter={() => {
-                    //   setHoveredEvent({ ...event, scrollToListItem: true });
-                    // }}
-                    // onMouseLeave={() => {
-                    //   setHoveredEvent(null);
-                    // }}
                   />
                 </Marker>
                 {line && (
                   <MapLine
                     lineString={line}
-                    isMajor={event.severity === "Major"}
+                    isMajor={isMajor}
                     hasSelected={!!selectedEvent}
                   />
                 )}
               </Fragment>
             );
           })}
-
           {selectedEvent?.line && (
             <MapLine
               lineString={selectedEvent?.line}
@@ -175,23 +151,6 @@ const MainMap: FC<MainMapProps> = ({
               hasSelected={!!selectedEvent}
             />
           )}
-
-          {/* {popupInfo && (
-          <Popup
-            anchor="top"
-            longitude={popupInfo.long}
-            latitude={popupInfo.lat}
-            onClose={() => setPopupInfo(null)}
-          >
-            <div>
-              <h3>{popupInfo.name}</h3>
-              <p>
-                <i>{popupInfo.time}</i>
-              </p>
-              <p>{popupInfo.description}</p>
-            </div>
-          </Popup>
-        )} */}
         </Map>
       )}
     </div>

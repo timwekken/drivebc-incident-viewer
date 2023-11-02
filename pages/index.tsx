@@ -8,7 +8,7 @@ export default function Viewer() {
       <Head>
         <title>EasyDriveBC - DriveBC Incident Viewer</title>
       </Head>
-      <IncidentViewer 
+      <IncidentViewer
         aboutBlurb={
           <p>
             Do you find it a challenge to navigate DriveBC&apos;s website?
@@ -17,7 +17,8 @@ export default function Viewer() {
             <Link href="/dec24demo">Christmas Eve 2022</Link>, when I was
             planning my drive from Vancouver to the Interior. Identify travel
             advisories on this easy-to-use, mobile-friendly map to get there
-            safely. All data is live from DriveBC. <a href="mailto:timwekken@gmail.com">Contact me</a>
+            safely. All data is live from DriveBC.{" "}
+            <a href="mailto:timwekken@gmail.com">Contact me</a>
           </p>
         }
       />
