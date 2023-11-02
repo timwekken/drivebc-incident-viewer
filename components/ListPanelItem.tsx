@@ -3,7 +3,6 @@ import dayjs from "dayjs";
 import { Event } from "../types/Event";
 import WarningIcon from "./icons/WarningIcon";
 import { getSvgIconFromType } from "./icons/PinIcons";
-import next from "next";
 
 interface ListPanelItemProps {
   event: Event;
@@ -30,19 +29,16 @@ const ListPanelItem: FC<ListPanelItemProps> = ({
 
   // Scroll to the event when it is selected (can be selected via the map)
   const scrollToEvent = () => {
-    if (scrollToListItem && ref.current) {
-      ref.current.scrollIntoView({
-        behavior: "instant", // could have it scroll like this: goToEvent?.fromURL ? "instant" : "smooth",
-        block: "start",
-      });
+    if (ref.current) {
+      ref.current.scrollIntoView({ block: "start" });
     }
   };
 
   useEffect(() => {
-    if (isSelected) {
+    if (isSelected && scrollToListItem) {
       scrollToEvent();
     }
-  }, [isSelected]);
+  }, [scrollToListItem, isSelected]);
 
   return (
     <li key={id} ref={ref}>

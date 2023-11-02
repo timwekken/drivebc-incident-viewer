@@ -12,7 +12,6 @@ export default function Document() {
             advisories on this easy-to-use, mobile-friendly map to get there
             safely."
         />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
           property="og:title"
           content="EasyDriveBC - DriveBC Incident Viewer"
