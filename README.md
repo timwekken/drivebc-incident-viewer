@@ -1,12 +1,12 @@
-## DriveBC Incident Viewer (EasyDriveBC)
+## EasyDriveBC (drivebc-incident-viewer)
 
 ### About
 
-This project aimed to enhance the accessibility of DriveBC alerts and warnings, providing a more user-friendly interface for quickly grasping the current road conditions and closures across BC. DriveBC serves as a platform offering information on various factors such as road closures and driving conditions. However, the current website's interface can be cumbersome and challenging to navigate at times. I encountered this issue notably last Christmas Eve (2022) when planning a trip from Vancouver to the Interior. To address this, I developed a more intuitive, mobile-friendly interface to offer a streamlined view of the ongoing situation. 
+EasyDriveBC is a project that aims to enhance the accessibility of DriveBC’s alerts and warnings, providing a more user-friendly interface for quickly grasping the current road conditions and closures across BC. DriveBC serves as a platform offering information on various factors such as road closures and driving conditions. However, the current website's interface can be cumbersome and challenging to navigate at times. I encountered this issue notably last Christmas Eve (2022) when planning a trip from Vancouver to the Interior. To address this, I developed a more intuitive, mobile-friendly interface to offer a streamlined view of the ongoing travel conditions. 
 
 The revamped app not only facilitates easier access to all alerts and warnings but also highlights the affected roads without the need to individually select each event. It maintains its data feed directly from DriveBC, ensuring real-time updates. Additional event details, typically accessible via individual clicks, are now retrieved and stored in a separate database for swift display.
 
-This project is currently hosted on https://www.easydrivebc.ca.
+This project is currently hosted at https://www.easydrivebc.ca.
 
 
 ### Running Locally
