@@ -15,30 +15,28 @@ const ListPanel: FC<ListPanelProps> = ({
   selectedEvent,
   setSelectedEvent,
   isLoading,
-}) => {
-  return (
-    <div
-      className="flex-[2] w-full h-full shadow-lg 
+}) => (
+  <div
+    className="flex-[2] w-full h-full shadow-lg 
                 border-slate-200 border-l-[1px] overflow-auto 
                 md:max-w-md sm:border-top-[1px] z-1"
-    >
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <ul className="w-full h-full">
-          {events.map((event) => (
-            <ListPanelItem
-              key={event.id}
-              event={event}
-              isSelected={selectedEvent?.id === event?.id}
-              scrollToListItem={selectedEvent?.scrollToListItem}
-              onClick={() => setSelectedEvent(event)}
-            />
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-};
+  >
+    {isLoading ? (
+      <Loader />
+    ) : (
+      <ul className="w-full h-full">
+        {events.map((event) => (
+          <ListPanelItem
+            key={event.id}
+            event={event}
+            isSelected={selectedEvent?.id === event?.id}
+            scrollToListItem={selectedEvent?.scrollToListItem}
+            onClick={() => setSelectedEvent(event)}
+          />
+        ))}
+      </ul>
+    )}
+  </div>
+);
 
 export default ListPanel;

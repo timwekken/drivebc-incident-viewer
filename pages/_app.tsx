@@ -5,7 +5,7 @@ import { Analytics } from "@vercel/analytics/react";
 import "../styles/globals.css";
 
 Sentry.init({
-  dsn: "https://fc43c5539aec4aae82044146938e102f@o4504442286243840.ingest.sentry.io/4504442287030272",
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   tracesSampleRate: 0.2,
 });
 
