@@ -1,24 +1,33 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import dbo from "../../server/db-connection";
 import getEventsWithPolylines from "../../server/get-events-with-polylines";
 
-// TODO: configure types instead of any
-
-dbo.connectToServer();
-
-export default function handler(
+/**
+ * API handler for retrieving events with polylines based on provided event IDs.
+ * @param {NextApiRequest} req - The Next.js API request object which should include 'eventIds[]' query.
+ * @param {NextApiResponse} res - The Next.js API response object.
+ * @returns {Promise<void>} - A Promise that resolves to void.
+ */
+export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<any>
-) {
-  // get all event ids from the req
-  const eventIds = req.query?.["eventIds[]"];
-  // Get the evnts and polylines from the db
-  getEventsWithPolylines(eventIds as string[])
-    .then((results) => {
-      res.status(200).json(results);
-    })
-    .catch((err) => {
-      res.status(400).json({ error: "Error fetching listings!" });
-    });
+  res: NextApiResponse
+): Promise<void> {
+  const eventIds = req.query?.["eventIds[]"] as string[];
+  try {
+    if (!eventIds || !Array.isArray(eventIds)) {
+      return res
+        .status(400)
+        .json({ error: "Invalid or missing 'eventIds[]' parameter." });
+    }
+    // Get the events and polylines from the db
+    const events = await getEventsWithPolylines(eventIds);
+    if (!events) {
+      return res
+        .status(404)
+        .json({ error: "Events not found for the provided IDs." });
+    }
+    res.status(200).json(events);
+  } catch (err) {
+    console.error("Error fetching listings:", err);
+    return res.status(500).json({ error: "Internal server error." });
+  }
 }

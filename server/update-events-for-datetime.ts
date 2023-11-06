@@ -1,20 +1,27 @@
-import { ObjectId } from "mongodb";
-import dbo from "./db-connection";
 import axios from "axios";
+import { getDB } from "./db-connection";
+import EventRepository from "./event-repository";
 
-const EVENTS_JSON_COLLECTION = "eventsJSON";
+const CURRENT_EVENTS_URL = "https://www.drivebc.ca/data/events.json";
 
+/**
+ * Updates the events collection in the database with data fetched from drivebc
+ * This is used to track the historical events for a given datetime (not yet visible in the UI)
+ * @returns {Promise<string>} A promise that resolves to a success message on updating events.
+ * @throws {Error} Throws an error if the update process fails.
+ */
 const updateEventsForDatetime = async () => {
-  const dbConnect = dbo.getDb();
-  return new Promise(async (resolve, reject) => {
-    // Get the json from https://www.drivebc.ca/data/events.json
-    const eventsJSON = await axios.get("https://www.drivebc.ca/data/events.json");
+  try {
+    // Get the JSON data from drivebc
+    const response = await axios.get(CURRENT_EVENTS_URL);
     // Add the events to the mongodb collection
-    dbConnect.collection(EVENTS_JSON_COLLECTION).insertOne({
-      timestamp: new Date().getTime(),
-      events: eventsJSON.data,
-    });
-  });
+    const db = await getDB();
+    await new EventRepository(db).insertCollection(response.data);
+    return "Events updated successfully";
+  } catch (error) {
+    console.error("Error updating events:", error);
+    throw new Error("Failed to update events");
+  }
 };
 
 export default updateEventsForDatetime;

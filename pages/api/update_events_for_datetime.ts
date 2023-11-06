@@ -1,22 +1,29 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import dbo from "../../server/db-connection";
 import updateEventsForDatetime from "../../server/update-events-for-datetime";
 
-dbo.connectToServer();
+const AUTHORIZATION_KEY = "W2Q9URmYZH";
 
-export default function handler(
+/**
+ * API handler for updating events with polylines (for currently active events)
+ * @param {NextApiRequest} req - The Next.js API request object which should include a key in the query
+ * @param {NextApiResponse} res - The Next.js API response object.
+ * @returns {Promise<void>} - A Promise that resolves to void.
+ */
+export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<any>
+  res: NextApiResponse
 ) {
-  if (req.query.key !== 'W2Q9URmYZH') {
-    res.status(404).end();
-    return;
+  try {
+    // Check if the authorization key is included in the query parameters
+    const { key } = req.query;
+    if (key !== AUTHORIZATION_KEY) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+    // If the authorization key is correct, proceed to update events
+    const results = await updateEventsForDatetime();
+    return res.status(200).json(results);
+  } catch (err) {
+    console.error("Error updating events:", err);
+    return res.status(500).json({ error: "Error updating events" });
   }
-  updateEventsForDatetime()
-    .then((results) => {
-      res.status(200).json(results);
-    })
-    .catch((err) => {
-      res.status(400).json({ error: "Error fetching listings!" });
-    });
 }
